@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+const primaryClr = bluishClr;
 const Color bluishClr = Color(0xFF4e5ae8);
 const Color yellowClr = Color(0xFFFFB746);
 const Color pinkClr = Color(0xFFff4667);
 const Color white = Colors.white;
-const primaryClr = bluishClr;
 const Color darkGreyClr = Color(0xFF121212);
-const Color darkHeaderClr = Color(0xFF424242);
 
 const textFieldLightColor = Color(0xFFebebeb);
 const textFieldDarkColor = Color(0xFF29292e);
@@ -72,11 +71,11 @@ void navigator(BuildContext context, Widget route) {
   Navigator.push(context, MaterialPageRoute(builder: (context) => route));
 }
 
-void notifier(String message, [bool error = false]) {
+void notifier(String message) {
   Fluttertoast.cancel();
   Fluttertoast.showToast(
     msg: message,
-    backgroundColor: error ? pinkClr : null,
+    backgroundColor: darkGreyClr,
     textColor: white,
   );
 }

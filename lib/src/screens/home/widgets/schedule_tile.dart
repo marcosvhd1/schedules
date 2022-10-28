@@ -6,30 +6,9 @@ import 'package:schedule/src/models/schedule.dart';
 import 'package:schedule/src/screens/details/schedule_details.dart';
 
 class ScheduleTile extends StatelessWidget {
-  const ScheduleTile({
-    super.key,
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.date,
-    required this.startTime,
-    required this.endTime,
-    required this.color,
-    required this.isCompleted,
-    required this.remind,
-    required this.repeat, 
-  });
+  const ScheduleTile(this.schedule, {super.key});
 
-  final int id;
-  final String title;
-  final String description;
-  final String date;
-  final String startTime;
-  final String endTime;
-  final int color;
-  final int isCompleted;
-  final int remind;
-  final String repeat;
+  final Schedule schedule;
 
   _getBGClr(int no) {
     switch (no) {
@@ -54,28 +33,12 @@ class ScheduleTile extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: vertical ? 4.h : 10.h),
         child: InkWell(
-          onTap: () => Navigator.push(
-            context, 
-            MaterialPageRoute(builder: (c) => Details(
-              schedule: Schedule(
-                id: id,
-                title: title,
-                description: description,
-                date: date,
-                startTime: startTime,
-                endTime: endTime,
-                color: color,
-                isCompleted: isCompleted,
-                remind: remind,
-                repeat: repeat,
-              ),
-            )),
-          ),
+          onTap: () => navigator(context, Details(schedule)),
           child: Ink(
             padding: EdgeInsets.symmetric(vertical: vertical ? 12.h : 20.h, horizontal: vertical ? 15.w : 8.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.r),
-              color: _getBGClr(color),
+              color: _getBGClr(schedule.color),
             ),
             child: Row(
               children: [
@@ -84,7 +47,7 @@ class ScheduleTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title,
+                        schedule.title,
                         style: TextStyle(
                           fontSize: vertical ? 16.sp : 8.sp,
                           fontWeight: FontWeight.bold,
@@ -102,7 +65,7 @@ class ScheduleTile extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            "$startTime - $endTime",
+                            "${schedule.startTime} - ${schedule.endTime}",
                             style: TextStyle(
                               fontSize: vertical ? 12.sp : 6.sp,
                               color: Colors.grey[100],
@@ -111,9 +74,9 @@ class ScheduleTile extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: vertical ? 6.h : 16.h),
-                      if (description != '')
+                      if (schedule.description != '')
                       Text(
-                        description,
+                        schedule.description,
                         style: TextStyle(
                           fontSize: vertical ? 14.sp : 7.sp,
                           color: Colors.grey[100],
@@ -131,7 +94,7 @@ class ScheduleTile extends StatelessWidget {
                 RotatedBox(
                   quarterTurns: 3,
                   child: Text(
-                    isCompleted == 1 ? "Finalizada" : "Pendente",
+                    schedule.isCompleted == 1 ? "Finalizada" : "Pendente",
                     style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,

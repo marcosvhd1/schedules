@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:schedule/constants/constants.dart';
-import 'package:schedule/data/database.dart';
+import 'package:schedule/src/controllers/schedule_controller.dart';
 import 'package:schedule/src/models/schedule.dart';
 import 'package:schedule/src/screens/schedule/widgets/color_palette.dart';
 import 'package:schedule/src/screens/schedule/widgets/input_form.dart';
@@ -12,10 +13,10 @@ class AddSchedule extends StatefulWidget {
   const AddSchedule({super.key});
 
   @override
-  State<AddSchedule> createState() => AddScheduleState();
+  State<AddSchedule> createState() => _AddScheduleState();
 }
 
-class AddScheduleState extends State<AddSchedule> {
+class _AddScheduleState extends State<AddSchedule> {
   final _formKey = GlobalKey<FormState>();
 
   final _title = TextEditingController();
@@ -31,13 +32,14 @@ class AddScheduleState extends State<AddSchedule> {
   String _selectionRepeat = 'Nunca';
   final List<String> _repeatList = ['Nunca', 'Diariamente', 'Semanalmente', 'Mensalmente'];
 
-  int selectedColor = 0;
-
   _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    await DBHelper.createSchedule(
-        Schedule(
+    final provider = Provider.of<ScheduleController>(context, listen: false);
+
+    await provider.setSchedule(
+      Schedule(
+        id: 0,
         title: _title.text,
         description: _description.text,
         date: DateFormat.yMd('pt').format(_selectedDate),
@@ -45,12 +47,12 @@ class AddScheduleState extends State<AddSchedule> {
         endTime: _endTime,
         remind: _selectionRemind,
         repeat: _selectionRepeat,
-        color: selectedColor,
+        color: ColorPaletteState.selectedColor,
         isCompleted: 0,
       ),
     ).then((value) {
       Navigator.pop(context);
-      notifier('Salvo com sucesso');
+      notifier('Evento adicionado');
     });
   }
 

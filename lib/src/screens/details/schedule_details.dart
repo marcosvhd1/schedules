@@ -6,7 +6,7 @@ import 'package:schedule/src/screens/details/widgets/finish_button.dart';
 import 'package:schedule/src/widgets/close_button.dart';
 
 class Details extends StatelessWidget {
-  const Details({super.key, required this.schedule});
+  const Details(this.schedule, {super.key});
 
   final Schedule schedule;
 
@@ -23,17 +23,13 @@ class Details extends StatelessWidget {
     }
   }
 
-  Color get color {
-    return schedule.color! == 1 ? darkGreyClr : white;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Close(color: color),
-        backgroundColor: _getBGClr(schedule.color!),
-        title: Text(schedule.title!, style: TextStyle(color: color, fontWeight: FontWeight.w700)),
+        leading: const Close(color: white),
+        backgroundColor: _getBGClr(schedule.color),
+        title: Text(schedule.title, style: const TextStyle(color: white, fontWeight: FontWeight.w700)),
         centerTitle: true,
       ),
       body: Center(
@@ -42,7 +38,7 @@ class Details extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: _getBGClr(schedule.color!),
+              color: _getBGClr(schedule.color),
               borderRadius: BorderRadius.circular(50)
             ),
             child: SingleChildScrollView(
@@ -50,33 +46,33 @@ class Details extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    leading:Icon(Icons.title, color: color),
-                    title: Text('Título', style: TextStyle(color: color)),
-                    subtitle: Text(schedule.title!, style: TextStyle(color: color)),
+                    leading:const Icon(Icons.title, color: white),
+                    title: const Text('Título', style: TextStyle(color: white)),
+                    subtitle: Text(schedule.title, style: const TextStyle(color: white)),
                   ),
                   ListTile(
-                    leading: Icon(Icons.description, color: color),
-                    title: Text('Descrição', style: TextStyle(color: color)),
-                    subtitle: Text(schedule.description!, style: TextStyle(color: color)),
+                    leading: const Icon(Icons.description, color: white),
+                    title: const Text('Descrição', style: TextStyle(color: white)),
+                    subtitle: Text(schedule.description, style: const TextStyle(color: white)),
                   ),
                   ListTile(
-                    leading: Icon(Icons.calendar_month, color: color),
-                    title: Text('Data', style: TextStyle(color: color)),
-                    subtitle: Text(schedule.date!, style: TextStyle(color: color)),
+                    leading: const Icon(Icons.calendar_month, color: white),
+                    title: const Text('Data', style: TextStyle(color: white)),
+                    subtitle: Text(schedule.date, style: const TextStyle(color: white)),
                   ),
                   Row(
                     children: [
                       Expanded(
                         child: ListTile(
-                          leading: Icon(Icons.access_time, color: color),
-                          title: Text('Início', style: TextStyle(color: color)),
-                          subtitle: Text(schedule.startTime!, style: TextStyle(color: color)),
+                          leading: const Icon(Icons.access_time, color: white),
+                          title: const Text('Início', style: TextStyle(color: white)),
+                          subtitle: Text(schedule.startTime, style: const TextStyle(color: white)),
                         ),
                       ),
                       Expanded(
                         child: ListTile(
-                          title: Text('Fim', style: TextStyle(color: color)),
-                          subtitle: Text(schedule.endTime!, style: TextStyle(color: color)),
+                          title: const Text('Fim', style: TextStyle(color: white)),
+                          subtitle: Text(schedule.endTime, style: const TextStyle(color: white)),
                         ),
                       ),
                     ],
@@ -87,7 +83,7 @@ class Details extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: schedule.isCompleted == 0 ? Finish(id: schedule.id!, color: _getBGClr(schedule.color!)) : Delete(id: schedule.id!),
+      floatingActionButton: schedule.isCompleted == 0 ? Finish(id: schedule.id, color: _getBGClr(schedule.color)) : Delete(id: schedule.id),
     );
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:schedule/constants/constants.dart';
-import 'package:schedule/data/theme_mode.dart';
 
 class InputForm extends StatelessWidget {
   const InputForm({
@@ -22,7 +20,7 @@ class InputForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<ModelTheme>(context);
+    final theme = MediaQuery.of(context).platformBrightness;
     final direction = MediaQuery.of(context).orientation;
     final vertical = direction == Orientation.portrait;
     return Column(
@@ -56,11 +54,11 @@ class InputForm extends StatelessWidget {
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 10.w, vertical: 14.h),
             filled: true,
-            fillColor: theme.isDark ? textFieldDarkColor : textFieldLightColor,
+            fillColor: theme == Brightness.dark ? textFieldDarkColor : textFieldLightColor,
             hintText: hint,
             hintStyle: TextStyle(
               fontWeight: FontWeight.w400,
-              color: theme.isDark ? textFieldLightColor : textFieldDarkColor,
+              color: theme == Brightness.dark ? textFieldLightColor : textFieldDarkColor,
             ),
             suffixIcon: widget,
           ),

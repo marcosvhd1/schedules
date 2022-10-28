@@ -24,7 +24,22 @@ class NotifyHelper {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  displayNotification({required String title, required String body}) async {
+  Future<void> _configureLocalTimeZone() async {
+    tz.initializeTimeZones();
+    final String timeZone = await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZone));
+  }
+
+  void requestIOSPermissions() {
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.
+    requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  Future<void> immediateNotification({required String title, required String body}) async {
     var androidPlatformChannelSpecifics = const 
     AndroidNotificationDetails(
       '1',
@@ -46,14 +61,16 @@ class NotifyHelper {
     );
   }
 
-  scheduledNotificationDaily(int hour, int minutes, int remind, Schedule schedule) async {
+  Future<void> scheduledNotification(DateTime dateTime, int hour, int minutes, Schedule schedule, {required String type}) async {
     await flutterLocalNotificationsPlugin.
     zonedSchedule(
-      schedule.id!,
+      schedule.id,
       schedule.title,
       schedule.description,
-      //Tempo até ser notificado
-      _convertTime(hour, minutes - remind),
+      //TIPO DE NOTIFICAÇÃO
+      type == 'Daily' ?
+      //SE FOR DIÁRIA OU SÓ NO DIA, PEGA A 1 OPÇÃO                                                                                                                                                                   //SE NÃO VERIFICA SE É SEMANAL OU MENSAL 
+      tz.TZDateTime(tz.local, dateTime.year, dateTime.month, dateTime.day, hour, minutes - schedule.remind) : tz.TZDateTime(tz.local, dateTime.year, dateTime.month, dateTime.day, hour, minutes - schedule.remind, type == 'Weekly' ? dateTime.weekday : dateTime.day),
       const NotificationDetails(android: AndroidNotificationDetails('1', 'Agendamentos')),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
@@ -62,59 +79,12 @@ class NotifyHelper {
     );
   }
 
-  scheduledNotificationWeekly(DateTime dateTime, int hour, int minutes, int remind, Schedule schedule) async {
-    await flutterLocalNotificationsPlugin.
-    zonedSchedule(
-      schedule.id!,
-      schedule.title,
-      schedule.description,
-      //Tempo até ser notificado
-      tz.TZDateTime(tz.local, dateTime.year, dateTime.month, dateTime.day, hour, minutes - remind, dateTime.weekday),
-      const NotificationDetails(android: AndroidNotificationDetails('1', 'Agendamentos')),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
-      payload: "${schedule.title}|${schedule.description}|",
-    );
+  Future<void> cancelScheduleNotification(int id) async {
+    await flutterLocalNotificationsPlugin.cancel(id);
   }
 
-  scheduledNotificationMonthly(DateTime dateTime, int hour, int minutes, int remind, Schedule schedule) async {
-    await flutterLocalNotificationsPlugin.
-    zonedSchedule(
-      schedule.id!,
-      schedule.title,
-      schedule.description,
-      //Tempo até ser notificado
-      tz.TZDateTime(tz.local, dateTime.year, dateTime.month, dateTime.day, hour, minutes - remind, dateTime.day),
-      const NotificationDetails(android: AndroidNotificationDetails('1', 'Agendamentos')),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
-      payload: "${schedule.title}|${schedule.description}|",
-    );
+  Future<void> cancelAllScheduleNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  void requestIOSPermissions() {
-    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.
-    requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  }
-
-  Future<void> _configureLocalTimeZone() async {
-    tz.initializeTimeZones();
-    final String timeZone = await FlutterNativeTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZone));
-
-  }
-
-  tz.TZDateTime _convertTime(int hour, int minutes) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduleDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minutes);
-
-    return scheduleDate;
-  }
-  
 }

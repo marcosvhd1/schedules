@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schedule/src/screens/home/widgets/content.dart';
-import 'package:schedule/src/screens/home/widgets/toggle_theme.dart';
+import 'package:schedule/src/screens/home/widgets/calendar_picker.dart';
+import 'package:schedule/src/screens/home/widgets/header.dart';
+import 'package:schedule/src/screens/home/widgets/list_schedules.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -8,8 +9,13 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: const ToggleTheme()),
-      body: const Content(),
+      body: Column(
+        children: const [
+          Header(),
+          CalendarPicker(),
+          ListSchedules(),
+        ],
+      ),
     );
   }
 }
